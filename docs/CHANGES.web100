@@ -1,6 +1,11 @@
 Web100 Kernel Change Summary
 
 CHANGES:
+	- Include tcp-kis.txt generated to web100 vars
+	- Include RFC4898 rather than now outdated MIB internet-draft
+	  (Note that Web100 was a prototype for RFC4898, and does not
+	  currently implement that standard.  The Web10g project will
+	  be implementing the full standard soon.)
 
 version 2.5.30 201008181640
 
