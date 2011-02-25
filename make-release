@@ -30,13 +30,13 @@ KERN_BASE=linux-web100
 do_checkout() {
 	set -e
 	
-	pushd $KERN_BASE
+	pushd $KERN_BASE >/dev/null
 	if [ -z "`git tag -l $WEB100_TAG`" ]; then
 		echo "Error: tag $WEB100_TAG needs to be created"
 		exit 1
 	fi
 	git checkout $WEB100_TAG
-	popd
+	popd >/dev/null
 }
 
 update_changes() {
@@ -86,19 +86,19 @@ get_version() {
 }
 
 copy_docs() {
-	pushd docs
+	pushd docs >/dev/null
 	for i in *; do
 		sed "s/%%kver%%/${KVER}/g
 		     s/%%wver%%/${WVER}/g" $i > ../web100/$i
 	done
-	popd
+	popd >/dev/null
 }
 
 kern_patch () {
 	echo "Making kernel patch..."
-	pushd $KERN_BASE
+	pushd $KERN_BASE >/dev/null
 	test ! "`git diff $BASE_TAG 2>&1 1>../$1`"
-	popd
+	popd >/dev/null
 }
 
 clean () {
