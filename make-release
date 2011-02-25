@@ -1,0 +1,133 @@
+#!/bin/bash
+#
+#
+# Build a source release of web100 software.
+#
+# make-release [-t]
+#	-t: test mode
+#
+# The web100 kernel git repo must be at $KERN_BASE
+#
+
+debug=false
+if [ \( "$1" = "-d" \) -o \( "$1" = "-t" \) ]; then
+    debug=true
+    shift
+fi
+if [ $# -ne 1 ]; then
+	echo "Usage: make-release [-d] <web100 release tag>"
+	exit 1
+fi
+
+WEB100_TAG=$1
+WEB100_VER=`echo $WEB100_TAG | cut -d- -f2`
+KVER=`echo $WEB100_TAG | cut -d- -f3`
+BASE_TAG=v$KVER
+KERN_BASE=linux-web100
+
+#--------------------------------------------------------
+
+do_checkout() {
+	set -e
+	
+	pushd $KERN_BASE
+	if [ -z "`git tag -l $WEB100_TAG`" ]; then
+		echo "Error: tag $WEB100_TAG needs to be created"
+		exit 1
+	fi
+	git checkout $WEB100_TAG
+	popd
+}
+
+update_changes() {
+	file=$1; shift
+	sed '/^CHANGES:/c\
+CHANGES:\
+\
+version '"$*" $file > $file.tmp
+	mv $file.tmp $file
+}
+
+get_version() {
+    set -e
+    # do all of the version work in a subdir
+    test -d tmp || mkdir tmp
+    (
+	set -e
+
+	cfile_rel=net/ipv4/web100_stats.c
+	cfile=$KERN_BASE/$cfile_rel
+	chgfile=docs/CHANGES.web100
+	test -f $cfile -a -f $chgfile
+
+	# everything from quote to space followed by 200? 
+	ls -l $cfile
+	oldv=`sed -n '/web100_version_string =/s/.*"\(.*\) 20.*/\1/p' $cfile`
+	echo
+	echo $PWD
+	echo -e "oldv = $oldv\n"
+	if [ "$oldv" != "$WEB100_VER" ]; then
+		echo "Version mismatch: $oldv != $WEB100_VER"
+		exit 1
+	fi
+	tstamp=`date "+%Y%m%d%H%M"`
+	echo $tstamp > tmp/TSTAMP
+	new_version="$oldv $tstamp"
+	echo $new_version | tr " " "-" > tmp/VERSION
+
+	# edit the sources
+	sed '/web100_version_string =/s/.*/char *web100_version_string = "'"$new_version"'"/' $cfile > $cfile.tmp
+	mv $cfile.tmp $cfile
+	update_changes $chgfile $new_version
+
+	# commit
+	# $debug || git commit -m "make-release autoupdate version: $new_version" $chgfile
+    )
+}
+
+copy_docs() {
+	pushd docs
+	for i in *; do
+		sed "s/%%kver%%/${KVER}/g
+		     s/%%wver%%/${WVER}/g" $i > ../web100/$i
+	done
+	popd
+}
+
+kern_patch () {
+	echo "Making kernel patch..."
+	pushd $KERN_BASE
+	test ! "`git diff $BASE_TAG 2>&1 1>../$1`"
+	popd
+}
+
+clean () {
+	echo "Cleaning up..."
+	rm -rf tmp web100
+}
+
+
+# The real action starts here
+set -e
+$debug || clean
+rm -rf web100-*.tar.gz web100-*.md5sum web100
+mkdir web100
+
+do_checkout
+get_version
+export WEB100_VERSION=`cat tmp/VERSION`
+export WVER=`cat tmp/VERSION | cut -d'-' -f1`
+PATCH_NAME=web100-${KVER}-${WEB100_VERSION}
+
+echo Patch name: $PATCH_NAME
+
+copy_docs
+kern_patch  web100/${PATCH_NAME}.patch
+
+tar -czf web100-${WEB100_VERSION}.tar.gz web100
+
+md5sum web100-${WEB100_VERSION}.tar.gz > web100-${WEB100_VERSION}.md5sum
+
+$debug || clean
+$debug && echo "Do not distribute -- debug make-release"
+$debug || echo -e "\n\nBuild complete."
