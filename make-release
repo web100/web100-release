@@ -81,7 +81,7 @@ get_version() {
 	update_changes $chgfile $new_version
 
 	# commit
-	# $debug || git commit -m "make-release autoupdate version: $new_version" $chgfile
+	$debug || git commit -m "make-release autoupdate version: $new_version" $chgfile
     )
 }
 
