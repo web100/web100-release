@@ -2,11 +2,8 @@ Web100 Kernel Change Summary
 
 CHANGES:
 
-version 2.5.32 201102251819
-
-version 2.5.31 201102251815
-
-version 2.5.31 201102251814
+	- Revised tcp-kis.txt to agree with Web100 (rather than RFC 4898)
+	- Revised README.web100 with updated contact information. 
 	- Include tcp-kis.txt generated to web100 vars
 	- Include RFC4898 rather than now outdated MIB internet-draft
 	  (Note that Web100 was a prototype for RFC4898, and does not

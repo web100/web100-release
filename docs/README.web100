@@ -1,8 +1,12 @@
 WEB100 release notes
 Matt Mathis
-Aug 2004
+Aug 2004, Updated Feb 2011
 
 This is the %%wver%% release of web100 software for Linux 2.6.* kernels.
+
+AS OF OCT 2010, PSC HAS BEEN FUNDED TO UPDATE WEB100 TO BE FULLY RFC 4898
+COMPLIANT AND GROOM IT FOR UPSTREAM INCLUSION.   PLEASE MONITOR
+www.web100.org FOR NEWS AND INFORMATION.
 
 -------------------------------------------------------------------------
 WARNING: Please note that if security permissions are not configured
@@ -99,27 +103,16 @@ Community Support
     We have established email lists and web pages as the principal means
     for supporting the web100 community.
 
+    All mailing lists have been shutdown except discussion@web100.org.
+    You MUST subscribe at https://lists.psc.edu/mailman/listinfo/web100-prog
+    before you can post.   
+
     Please use "discussion@web100.org" to communicate with other web100
     testers like yourself and our support staff.  This is the best address
     for general advice and discussion about web100, since your messages are
-    likely to stimulate ideas in others.  Please visit:
-    http://internal.web100.org/mailman/listinfo/discussion to add yourself
-    to the discussion mailing list, to view archives or to manage your
-    subscription(s).
+    likely to stimulate ideas in others.
 
-    Please use "support@web100.org" if you wish to communicate with just
-    the support staff.  This is the best address for conversations that
-    could be distracting to other testers.
-
-    Please visit internal.web100.org to get updates, news, archives, track
-    bug reports and more.  In the future this site will be the primary
-    location to obtain updated documentation and new releases.  Please
-    register a user ID.
-
-    For information on known bugs please see
-    https://internal.web100.org/bugs/?group_id=3
-
-    Please send us you suggestions!
+    This list will be used to announce future updates.
 
 ================================================================
 Copyrights
