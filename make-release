@@ -103,6 +103,12 @@ kern_patch () {
 	popd >/dev/null
 }
 
+post_kern () {
+	pushd $KERN_BASE >/dev/null
+	git checkout -- net/ipv4/web100_stats.c
+	popd >/dev/null
+}	
+
 clean () {
 	echo "Cleaning up..."
 	rm -rf tmp web100
@@ -125,6 +131,7 @@ echo Patch name: $PATCH_NAME
 
 copy_docs
 kern_patch  web100/${PATCH_NAME}.patch
+post_kern
 
 tar -czf web100-${WEB100_VERSION}.tar.gz web100
 
