@@ -1,0 +1,49 @@
+Author: John Heffner <johnwheffner@gmail.com>
+
+
+INSTRUCTIONS FOR BUILDING A WEB100 RELEASE
+
+1. Clone the web100 kernel repo into this directory, at linux-web100/, or
+set KERN_BASE to the location of the cloned repo.
+
+2. In this repo or another one, make any changes necessary and commit them.
+Since we don't make many changes anymore, chances are this is just updating
+the base kernel version (see below on how to do this).  When you've got the
+commit you want to release (you've tested it already, right?), tag it with
+web100-<web100_ver>-<base_kernel_ver>.  If you're using another repo to make
+the changes, make sure you push them to the master repo then pull them to
+the local one.
+
+3. Update CHANGES.web100 if necessary, and read over the other docs to make
+sure they're up to date.  They don't change much these days, so you're
+probably fine.
+
+4. Run ./make-release web100-<web100_ver>-<base_kernel_ver>.  (Just copy and
+paste the tag you just created above.) That's it!  If all goes well, the
+script will leave a tarball and md5sum in the current directory.  Now that
+these are built, it's a good idea to actually apply the patch against a
+fresh untarred kernel and build it before releasing to the public.  I have
+to admit, I don't usually do this anymore since the release process above
+seems to work pretty reliably these days.  At least inspect the patch to
+make sure it's got the right things, and isn't carrying a bunch of other
+non-web100 stuff that doesn't belong.
+
+
+REBASING THE PATCH TO A NEW VERSION
+
+The linux-web100 repo keeps all the web100 changes on the master branch,
+with merges from Linus's kernel at each official third-dot release.  To get
+changes from Linus, in a local linux-web100 repo, add a remote if you
+haven't already:
+  git remote add linus git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+Then, fetch the latest changes from upstream:
+  git fetch linus
+
+Now merge the changes.  First, make sure you're at the head of master ('git
+branch' should show "* matser", run 'git status' to make sure you don't have
+anything uncommited).  Now merge:
+  git merge linus/master
+
+Fix up any conflicts, 'git add' the fixed files, and 'git commit'.  Build
+and test.  If anything is broken, fix it and do a 'git commit --amend'. 
+Then push and build the new release.
