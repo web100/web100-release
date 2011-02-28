@@ -6,7 +6,7 @@
 # make-release [-t]
 #	-t: test mode
 #
-# The web100 kernel git repo must be at $KERN_BASE
+# The web100 kernel git repo must be at $KERN_BASE (linux-web100)
 #
 
 debug=false
@@ -23,7 +23,9 @@ WEB100_TAG=$1
 WEB100_VER=`echo $WEB100_TAG | cut -d- -f2`
 KVER=`echo $WEB100_TAG | cut -d- -f3`
 BASE_TAG=v$KVER
-KERN_BASE=linux-web100
+if [ ! "$KERN_BASE" ]; then
+	KERN_BASE=linux-web100
+fi
 
 #--------------------------------------------------------
 
